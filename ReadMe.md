@@ -1,8 +1,8 @@
-# Aggregated Grade Balance Visualization Project 📊
+# Loan Analysis Dashboard 📊
 
 ## Overview
 
-Welcome to the Aggregated Grade Balance Visualization Project. This React-powered application leverages insightful visualizations to transform complex loan data into accessible and actionable insights 🌟. Designed for financial professionals and data analysts, it simplifies the analysis of loan grades and balances, enabling informed decision-making with precision and ease.
+Welcome to the Loan Analysis Dashboard. This React-powered application leverages insightful visualizations to transform complex loan data into accessible and actionable insights 🌟. Designed for financial professionals and data analysts, it simplifies the analysis of loan grades and balances, enabling informed decision-making with precision and ease.
 
 ## Features
 
