@@ -27,13 +27,13 @@ To get up and running:
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/MacLeanLuke/aggregated-grade-balances-v1.git
+   git clone https://github.com/MacLeanLuke/loan-analysis-dashboard.git
    ```
 
 2. Enter the project directory:
 
    ```sh
-   cd aggregated-grade-balances-v1
+   cd loan-analysis-dashboard
    ```
 
 3. Install dependencies:
