@@ -1,0 +1,56 @@
+/* Container for the table, ensuring it scrolls on smaller screens */
+.tableContainer {
+  width: 100%; 
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Base styles for the table */
+.table {
+  width: 100%;
+  min-width: 600px; 
+  border-collapse: collapse;
+}
+
+/* Table headers with a bold, professional appearance */
+.th {
+  background-color: #f3f6f9; 
+  color: #333; 
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 15px; 
+  border-bottom: 2px solid #e1e4e8; 
+}
+
+/* Zebra striping for rows and hover effect */
+.tr:nth-child(odd) {
+  background-color: #fff; 
+}
+
+
+.tr:nth-child(even) {
+  background-color: #f9fafb; 
+}
+
+
+.tr:hover {
+  background-color: #eef1f4; 
+}
+
+/* Table cells with padding and border for clarity */
+.td {
+  padding: 12px 15px; 
+  border-bottom: 1px solid #e1e4e8; 
+  color: #333; 
+}
+
+
+.firstColumn {
+  background-color: #f0f3f7; 
+  color: #2f3e52; 
+  font-weight: 500; 
+  white-space: nowrap; 
+  text-align: left; 
+  font-size: 0.95rem; 
+  padding: 12px 15px; 
+}

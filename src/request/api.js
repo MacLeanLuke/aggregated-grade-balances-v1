@@ -28,7 +28,6 @@ export const getData = async () => {
   const csvData = await fetch(rawData).then((response) => {
     return response.text();
   });
-  console.log("csvdata",csvData);
   const data = [];
   await Papa.parse(csvData, {
     complete: (result) => parseData(result, data),
