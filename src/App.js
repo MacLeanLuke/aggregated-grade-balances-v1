@@ -1,37 +1,39 @@
 import "./App.css";
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { getData } from "./request/api";
 import { Dropdown, Table, Barchart } from "./components";
 
 // Main App component that handles data fetching, filtering, and visualization
-class App extends Component {
+const App = () => {
   // State initialization with data, filteredData, and filters
-  state = {
-    data: [],
-    filteredData: [],
-    filters: { homeOwnership: "", quarter: "", term: "", year: "" },
-  };
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [filters, setFilters] = useState({
+    homeOwnership: "",
+    quarter: "",
+    term: "",
+    year: "",
+  });
 
-  // Lifecycle method that runs after the component mounts
-  async componentDidMount() {
-    // Fetch data from API and update state
-    const fetchedData = await getData();
-    this.setState({ data: fetchedData, filteredData: fetchedData });
-  }
+  useEffect(() => {
+    const fetchAndSetData = async () => {
+      const fetchedData = await getData();
+      setData(fetchedData);
+      setFilteredData(fetchedData);
+    };
+
+    fetchAndSetData();
+  }, []);
 
   // Helper function to get unique values from the data for dropdown options
-  getUniqueValues = (key) => {
+  const getUniqueValues = (key) => {
     // Create a set with unique values and convert it back to an array
-    const unique = new Set(
-      this.state.data.map((item) => item[key]).filter(Boolean)
-    );
+    const unique = new Set(data.map((item) => item[key]).filter(Boolean));
     return [...unique];
   };
 
   // Method to filter the data based on selected dropdown options
-  filterData = () => {
-    const { data, filters } = this.state;
-
+  const filterData = () => {
     // Filter the data according to the current filters
     const filteredData = data.filter((item) => {
       // Check if all filters match the item's properties
@@ -48,12 +50,11 @@ class App extends Component {
     });
 
     // Update the state with the new filtered data
-    this.setState({ filteredData });
+    setFilteredData(filteredData);
   };
 
   // Method to aggregate data by grade after filtering
-  aggregateDataByGrade = () => {
-    const { filteredData } = this.state;
+  const aggregateDataByGrade = () => {
     const aggregatedData = {};
 
     // Accumulate total balances for each grade
@@ -93,83 +94,76 @@ class App extends Component {
   };
 
   // Event handler for filter change, updates state with new filter value
-  handleFilterChange = (filterName) => (event) => {
+  const handleFilterChange = (filterName) => (event) => {
     const value = event.target.value;
-    this.setState(
-      (prevState) => ({
-        filters: { ...prevState.filters, [filterName]: value },
-      }),
-
-      // Callback to re-filter the data after state update
-      this.filterData
-    );
+    setFilters({ ...filters, [filterName]: value });
   };
+
+  // Update filtered data whenever filters change
+  useEffect(() => {
+    filterData();
+  }, [filters]);
 
   // Method to reset all filters to their default values
-  resetFilters = () => {
-    // Reset filters and use the original data set as filtered data
-    this.setState({
-      filters: { homeOwnership: "", quarter: "", term: "", year: "" },
-      filteredData: this.state.data,
-    });
+  const resetFilters = () => {
+    setFilters({ homeOwnership: "", quarter: "", term: "", year: "" });
+    setFilteredData(data); // Reset the filteredData to the original data set
   };
 
-  // Render method to display the dropdowns, button, table, and bar chart
-  render() {
-    // Pre-calculate aggregated data for the table and bar chart
-    const aggregatedData = this.aggregateDataByGrade();
-    // Get unique values for each filter to populate dropdowns
-    const homeOwnerships = this.getUniqueValues("homeOwnership");
-    const quarters = this.getUniqueValues("quarter");
-    const terms = this.getUniqueValues("term");
-    const years = this.getUniqueValues("year");
+  // Pre-calculate aggregated data for the table and bar chart
+  const aggregatedData = aggregateDataByGrade();
+  // Get unique values for each filter to populate dropdowns
+  const homeOwnerships = getUniqueValues("homeOwnership");
+  const quarters = getUniqueValues("quarter");
+  const terms = getUniqueValues("term");
+  const years = getUniqueValues("year");
 
-    // JSX to render the application's UI components
-    return (
-      <div className="App">
-        <h1>Loan Analysis Dashboard</h1>
-        <div style={{ marginBottom: "2rem" }}>
-          <Dropdown
-            label="Home Ownership"
-            options={homeOwnerships}
-            onChange={this.handleFilterChange("homeOwnership")}
-            value={this.state.filters.homeOwnership}
-          />
-          <Dropdown
-            label="Quarter"
-            options={quarters}
-            onChange={this.handleFilterChange("quarter")}
-            value={this.state.filters.quarter}
-          />
-          <Dropdown
-            label="Term"
-            options={terms}
-            onChange={this.handleFilterChange("term")}
-            value={this.state.filters.term}
-          />
-          <Dropdown
-            label="Year"
-            options={years}
-            onChange={this.handleFilterChange("year")}
-            value={this.state.filters.year}
-          />
-          <button className="resetButton" onClick={this.resetFilters}>
-            Reset Filters
-          </button>
-        </div>
-        {this.state.filteredData.length === 0 ? (
-          <p className="no-data-message">
-            No data available for the selected filters.
-          </p>
-        ) : (
-          <>
-            <Barchart aggregatedData={aggregatedData} />
-            <Table aggregatedData={aggregatedData} />
-          </>
-        )}
+  // JSX to render the application's UI components
+  return (
+    <div className="App">
+      <h1>Loan Analysis Dashboard</h1>
+      <div style={{ marginBottom: "2rem" }}>
+        <Dropdown
+          label="Home Ownership"
+          options={homeOwnerships}
+          onChange={handleFilterChange("homeOwnership")}
+          value={filters.homeOwnership}
+        />
+        <Dropdown
+          label="Quarter"
+          options={quarters}
+          onChange={handleFilterChange("quarter")}
+          value={filters.quarter}
+        />
+        <Dropdown
+          label="Term"
+          options={terms}
+          onChange={handleFilterChange("term")}
+          value={filters.term}
+        />
+        <Dropdown
+          label="Year"
+          options={years}
+          onChange={handleFilterChange("year")}
+          value={filters.year}
+        />
+        <button className="resetButton" onClick={resetFilters}>
+          Reset Filters
+        </button>
       </div>
-    );
-  }
-}
+      {filteredData.length === 0 ? (
+        <p className="no-data-message">
+          No data available for the selected filters.
+        </p>
+      ) : (
+        <>
+          <Barchart aggregatedData={aggregatedData} />
+          <Table aggregatedData={aggregatedData} />
+        </>
+      )}
+    </div>
+  );
+};
+// }
 
 export default App;
